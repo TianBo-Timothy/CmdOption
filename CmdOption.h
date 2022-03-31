@@ -1,11 +1,17 @@
+/*
+ * Copyright [2016] Bo Tian
+ * @Author: Bo Tian
+ */
+
+#pragma once
+
 #include <getopt.h>
 #include <sstream>
 #include <iostream>
 #include <vector>
 #include <map>
 
-#pragma once
-
+namespace tianbo {
 /**
  * This classes store a value in its string form, it can be convert to desired
  * types when needed. This is used as return type of CmdOption's [] operator.
@@ -707,3 +713,4 @@ private:
     StringValue m_nullStrValue;
 };
 
+} // end of namespace tianbo
