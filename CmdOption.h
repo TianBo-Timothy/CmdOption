@@ -592,10 +592,6 @@ private:
                 break;
             }
 
-            if (word.length() <= 1) {
-                return false;
-            }
-
             if (word[0] != '-') {
                 if (n == 1) {
                     // the first word does not start with '-', this is not an
