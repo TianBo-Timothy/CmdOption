@@ -1,6 +1,8 @@
 /*
  * Copyright [2016] Bo Tian
  * @Author: Bo Tian
+ * 
+ * This file can be found at https://github.com/TianBo-Timothy/CmdOption
  */
 
 #pragma once
