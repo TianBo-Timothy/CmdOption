@@ -17,11 +17,10 @@ This example is a simple divider program. The task of the program is simply divi
 #include "CmdOption.h"
 int main(int argc, char **argv) {
   tianbo::CmdOption command_opt;
-  // the command line parser is initialized with the usage text
+  // Add the usage text. This usage message is not only used as a help message, but also as the input for the
+  // CmdOption object to initialize itself.
   command_opt << R"(
-This example divider program demonstrates how to use the CmdOption class to parse the command
-line. This usage message is not only used as a help message, but also as the input for the
-CmdOption object to initialize itself.
+Divider two integers.
 
 Usage: divide [options] a b
 
@@ -59,58 +58,61 @@ divide -w 5 0
 )";
 ```
 
-  // The following is only for debugging. In case the CmdOption class cannot
-  // parse the usage, use this function to print the error message to see which
-  // line went wrong. This line should be removed once debugging is done.
+If the usage message does not follow the protocol, the parser may not be able to parse it properly thus not able to parse the command line. You can use the function `reportError()` to show the detail of the problem if there is any error in the text.
+
+```c++
   command_opt.reportError();
-  command_opt.debugReport();
+```
 
-  // parse the options and arguments
+This line should be removed once debugging is done.
+
+The command line is parsed by calling the function `parse()`
+```c++
   command_opt.parse(argc, argv);
+```
 
-  // The [] operator is used to access the switch. The following shows how to
-  // check if -h option is given. Alternatively, this switch can be checked with
-  // command_opt["help"]
+The `[]` operator is used to access the switch. The following shows how to
+check if `-h` option is given. Alternatively, this switch can be checked with
+`command_opt["help"]`
+```c++  
   if (command_opt["h"]) {
     command_opt.usage();
     return 0;
   }
+```
 
-  // Internally, the [] operator returns a StringValue type, which can be
-  // interpreted as a boolean to tell if it has been set.
+Internally, the `[]` operator returns a `StringValue` type, which can be
+interpreted as a `boolean` to tell if it has been set.
+```c++
   bool show_warning = (bool)command_opt["w"];
+```
 
-  // "precision" option has no short form. It has to be accessed with the long
-  // option. The StringValue returned by [] operator can be converted to an
-  // integer. It is equivalent to int precision = 15; if
-  // (command_opt["precision"])
-  //   precision = command_opt["precision"];
+The "precision" option has no short form. It has to be accessed with the long
+option. The `StringValue` returned by `[]` operator can be converted to an integer.
+```c++
   int precision = command_opt["precision"].valueOr(15);
+```
+It is equivalent to
+```c++
+  int precision = 15; 
+  if (command_opt["precision"])
+    precision = command_opt["precision"];
+```
 
-  // The command line arguments are accessible through arguments()
+The command line arguments are accessible through function `arguments()`
+```c++
   if (command_opt.arguments().count() != 2) {
     std::cerr << "No operands provided" << std::endl;
     return 1;
   }
+```
 
-  // The arguments can be converted into a vector of integers or other data
-  // types
+The arguments can be converted into a vector of integers or other data types
+```
   std::vector<int> operands = command_opt.arguments();
   if (show_warning && operands.back() == 0) {
     std::cerr << "The divisor is zero!" << std::endl;
     return 2;
   }
+```
 
-  double result = static_cast<double>(operands.front()) /
-                  static_cast<double>(operands.back());
-
-  std::cout << "the result: " << std::setprecision(precision) << result
-            << std::endl;
-
-  if (command_opt["f"]) {
-    std::ofstream(command_opt["f"].str())
-        << "the result: " << std::setprecision(precision) << result
-        << std::endl;
-  }
-  return 0;
-}
