@@ -116,3 +116,4 @@ The arguments can be converted into a vector of integers or other data types
   }
 ```
 
+The rest is do the simple calculation, which can be found in the file `example.cpp`
